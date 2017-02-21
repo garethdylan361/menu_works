@@ -1,0 +1,56 @@
+<?php 
+
+function template_preprocess_menu_works_page(&$variables) {
+	$m = $variables['menu']['menu_name'];
+	$variables['menus'] = render_sortable_menus(render_menus($m));
+ 	$variables['menu'] = $m;
+	
+}
+
+function sortable_menu_save () {
+  if (empty($_POST["js"])){ die(); }
+  $menus = $_POST['menus'];
+  foreach($menus as $menu) {
+	  $menu_link = menu_link_load($menu['mlid']);
+	  $menu_link['weight'] =  $menu['weight'];
+	  $menu_link['plid'] =  $menu['plid'];
+	  menu_link_save($menu_link);
+  }
+  exit();
+}	
+
+/**
+ * Implements hook_menu().
+ */
+function menu_works_menu() {
+  $items['menu_works/save'] = array(
+    'page callback' => 'sortable_menu_save',
+	'access arguments' => array('administer menu'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function menu_works_menu_alter(&$items) {
+   $items['admin/structure/menu/manage/%menu'] = array(
+    'page callback' => 'menu_works_page',
+    'page arguments' => array(4),
+    'access arguments' => array('administer menu'),
+	'file' => drupal_get_path('module', 'menu_works') . '/menu_works.admin.inc'
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function menu_works_theme() {
+  return array(
+	 'menu_works_page' => array(
+      'template' => 'menu-works-page', 
+    ),
+  );
+}
+

@@ -1,0 +1,6 @@
+name = Menu Works
+description = Extends menus and creates a more fluid menu system with collapsible menus.
+package = Menu
+version = 0.5
+core = 7.x
+scripts[] = js/jquery.nestable.js
